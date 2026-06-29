@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-:root {
 @theme {
   --color-warm-white: #fdfbf7;
   --color-sandy: #f4c27a;
@@ -11,14 +10,10 @@
   --color-spidey-blue: #0f4c81;
   --color-spidey-red: #d92d2d;
 
-  --font-sans: var(--font-inter);
-}
+  --color-background: var(--color-warm-white);
+  --color-foreground: #1a1a1a;
 
-@layer base {
-  :root {
-    --background: var(--color-warm-white);
-    --foreground: #1a1a1a;
-  }
+  --font-sans: var(--font-inter);
 }
 
 @layer base {
@@ -26,7 +21,7 @@
     @apply border-gray-200;
   }
   body {
-    @apply bg-warm-white text-foreground antialiased overflow-x-hidden;
+    @apply bg-background text-foreground antialiased overflow-x-hidden;
   }
 }
 
