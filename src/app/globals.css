@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+:root {
+@theme {
+  --color-warm-white: #fdfbf7;
+  --color-sandy: #f4c27a;
+  --color-orange: #eb8f34;
+  --color-coral: #df583f;
+  --color-dark-red: #7c1d1d;
+
+  --color-spidey-blue: #0f4c81;
+  --color-spidey-red: #d92d2d;
+
+  --font-sans: var(--font-inter);
+}
+
+@layer base {
+  :root {
+    --background: var(--color-warm-white);
+    --foreground: #1a1a1a;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-gray-200;
+  }
+  body {
+    @apply bg-warm-white text-foreground antialiased overflow-x-hidden;
+  }
+}
+
+/* Custom scrollbar to be hidden or sleek */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
