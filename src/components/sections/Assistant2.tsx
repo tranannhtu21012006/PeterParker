@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { ArrowLeft, PlusCircle, Search, History as HistoryIcon, PieChart, Target, CheckCircle2 } from "lucide-react";
+import { MatrixChart } from "@/components/ui/MatrixChart";
 
 type SubView = "menu" | "importing" | "history" | "searching" | "statistics" | "saving_goals";
 
@@ -36,9 +37,9 @@ export default function Assistant2({ onNavigate }: { onNavigate: (section: strin
 
   return (
     <motion.div 
-      initial={{ opacity: 0, x: 50 }} // Slide from right
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 50 }}
+      initial={{ opacity: 0 }} 
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, margin: "-10%" }}
       className="absolute inset-0 w-full h-full flex items-center justify-center p-8"
     >
       <AnimatePresence mode="wait">
@@ -50,28 +51,32 @@ export default function Assistant2({ onNavigate }: { onNavigate: (section: strin
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="flex items-center justify-center gap-24 w-full max-w-5xl"
+            className="flex items-center justify-center gap-12 lg:gap-32 w-full max-w-5xl"
           >
             {/* Center Avatar */}
             <div className="flex flex-col items-center gap-4">
-              <div className="w-48 h-48 rounded-full border-4 border-white shadow-[0_0_30px_rgba(255,255,255,0.5)] overflow-hidden bg-white/50 p-2 backdrop-blur-sm group hover:scale-105 transition-transform">
+              <div className="w-48 h-48 rounded-full border-4 border-white shadow-[0_0_30px_rgba(255,255,255,0.5)] overflow-hidden bg-white/50 p-2 backdrop-blur-sm group hover:scale-105 transition-transform duration-500">
                 <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Parker" alt="Avatar" className="w-full h-full object-cover rounded-full" />
               </div>
-              <h2 className="text-2xl font-bold">@Peter</h2>
+              <h2 className="text-2xl font-bold bg-white/40 px-4 py-1 rounded-full backdrop-blur-md">@Peter</h2>
             </div>
 
-            {/* Right Menu */}
-            <div className="flex flex-col gap-4">
+            {/* Right Menu - Compact Hover List */}
+            <div className="flex flex-col gap-3">
               {MENU_ITEMS.map((item) => {
                 const Icon = item.icon;
                 return (
                   <button
                     key={item.id}
                     onClick={() => setView(item.id as SubView)}
-                    className="group flex items-center gap-4 bg-white/20 hover:bg-white/40 backdrop-blur-md px-8 py-4 rounded-2xl border border-white/50 shadow-md transition-all hover:translate-x-4"
+                    className="group flex items-center bg-white/20 hover:bg-white/60 backdrop-blur-md rounded-full shadow-md transition-all duration-300 overflow-hidden w-16 hover:w-64 border border-white/40 h-16"
                   >
-                    <Icon className="w-6 h-6 text-foreground" />
-                    <span className="text-xl font-bold text-foreground">{item.label}</span>
+                    <div className="w-16 h-16 flex-shrink-0 flex items-center justify-center">
+                      <Icon className="w-6 h-6 text-foreground" />
+                    </div>
+                    <span className="text-lg font-bold text-foreground whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pr-6">
+                      {item.label}
+                    </span>
                   </button>
                 );
               })}
@@ -86,10 +91,10 @@ export default function Assistant2({ onNavigate }: { onNavigate: (section: strin
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="w-full max-w-4xl bg-white/30 backdrop-blur-xl p-10 rounded-3xl border border-white/50 shadow-2xl flex flex-col gap-8"
+            className="w-full max-w-4xl bg-white/40 backdrop-blur-2xl p-10 rounded-3xl border border-white/50 shadow-2xl flex flex-col gap-8"
           >
             <div className="flex items-center gap-4">
-              <button onClick={() => setView("menu")} className="p-2 bg-white/50 rounded-full hover:bg-white/80 transition-colors">
+              <button onClick={() => setView("menu")} className="p-2 bg-white/50 rounded-full hover:bg-white/80 transition-colors shadow-sm">
                 <ArrowLeft className="w-6 h-6" />
               </button>
               <h2 className="text-3xl font-bold">Importing</h2>
@@ -97,14 +102,14 @@ export default function Assistant2({ onNavigate }: { onNavigate: (section: strin
             
             <p className="text-lg font-medium text-gray-800">Choose a category to keep your spending organized</p>
 
-            <div className="flex gap-10">
+            <div className="flex gap-10 h-[350px]">
               {/* Categories Scroll */}
-              <div className="flex flex-col gap-2 h-[300px] overflow-y-auto pr-4 w-1/3 hide-scrollbar">
+              <div className="flex flex-col gap-2 overflow-y-auto pr-4 w-1/3 hover:scrollbar-thin scrollbar-thumb-orange scrollbar-track-transparent">
                 {CATEGORIES.map(cat => (
                   <button
                     key={cat}
                     onClick={() => setSelectedCat(cat)}
-                    className={`px-6 py-3 rounded-xl font-semibold text-left transition-colors ${selectedCat === cat ? "bg-foreground text-background" : "bg-white/50 hover:bg-white/80"}`}
+                    className={`px-6 py-3 rounded-xl font-semibold text-left transition-colors ${selectedCat === cat ? "bg-foreground text-background shadow-md" : "bg-white/50 hover:bg-white/80"}`}
                   >
                     {cat}
                   </button>
@@ -114,8 +119,8 @@ export default function Assistant2({ onNavigate }: { onNavigate: (section: strin
               {/* Input Form */}
               <div className="flex-1">
                 {selectedCat ? (
-                  <form onSubmit={handleImport} className="flex flex-col gap-6">
-                    <div className="bg-white/50 p-6 rounded-2xl flex flex-col gap-4">
+                  <form onSubmit={handleImport} className="flex flex-col gap-6 h-full">
+                    <div className="bg-white/60 p-6 rounded-2xl flex flex-col gap-6 flex-1 shadow-inner">
                       <div>
                         <label className="text-sm font-bold text-gray-600 uppercase">Amount</label>
                         <input 
@@ -137,15 +142,15 @@ export default function Assistant2({ onNavigate }: { onNavigate: (section: strin
                           placeholder="What was this for?"
                         />
                       </div>
-                      <p className="text-xs text-gray-500 font-medium">* Date and time will be automatically recorded.</p>
+                      <p className="text-xs text-gray-500 font-medium mt-auto">* Date and time will be automatically recorded.</p>
                     </div>
                     
-                    <button type="submit" className="bg-foreground text-background py-4 rounded-xl font-bold text-lg hover:opacity-90 shadow-lg flex items-center justify-center gap-2">
+                    <button type="submit" className="bg-foreground text-background py-4 rounded-xl font-bold text-lg hover:opacity-90 shadow-lg flex items-center justify-center gap-2 transition-transform active:scale-95">
                       <CheckCircle2 className="w-6 h-6" /> Save Transaction
                     </button>
                   </form>
                 ) : (
-                  <div className="h-full flex items-center justify-center text-gray-500 font-medium text-lg border-2 border-dashed border-gray-400 rounded-2xl">
+                  <div className="h-full flex items-center justify-center text-gray-500 font-medium text-lg border-2 border-dashed border-gray-400/50 rounded-2xl bg-white/20">
                     Select a category first
                   </div>
                 )}
@@ -154,8 +159,30 @@ export default function Assistant2({ onNavigate }: { onNavigate: (section: strin
           </motion.div>
         )}
 
-        {/* OTHER VIEWS (History, Searching, Stats, Saving Goals) */}
-        {["history", "searching", "statistics", "saving_goals"].includes(view) && (
+        {/* SEARCHING VIEW (With Matrix Chart) */}
+        {view === "searching" && (
+           <motion.div 
+           key="searching"
+           initial={{ opacity: 0, y: 20 }}
+           animate={{ opacity: 1, y: 0 }}
+           exit={{ opacity: 0, y: -20 }}
+           className="w-full max-w-5xl bg-white/40 backdrop-blur-2xl p-10 rounded-3xl border border-white/50 shadow-2xl flex flex-col gap-8 h-[600px]"
+         >
+           <div className="flex items-center gap-4">
+             <button onClick={() => setView("menu")} className="p-2 bg-white/50 rounded-full hover:bg-white/80 transition-colors shadow-sm">
+               <ArrowLeft className="w-6 h-6" />
+             </button>
+             <h2 className="text-3xl font-bold">Searching & Analysis</h2>
+           </div>
+           
+           <div className="flex-1 w-full">
+              <MatrixChart />
+           </div>
+         </motion.div>
+        )}
+
+        {/* OTHER VIEWS (History, Statistics, Saving Goals) */}
+        {["history", "statistics", "saving_goals"].includes(view) && (
           <motion.div 
             key="other"
             initial={{ opacity: 0, y: 20 }}
@@ -164,30 +191,20 @@ export default function Assistant2({ onNavigate }: { onNavigate: (section: strin
             className="w-full max-w-4xl bg-white/30 backdrop-blur-xl p-10 rounded-3xl border border-white/50 shadow-2xl flex flex-col gap-8 min-h-[500px]"
           >
             <div className="flex items-center gap-4">
-              <button onClick={() => setView("menu")} className="p-2 bg-white/50 rounded-full hover:bg-white/80 transition-colors">
+              <button onClick={() => setView("menu")} className="p-2 bg-white/50 rounded-full hover:bg-white/80 transition-colors shadow-sm">
                 <ArrowLeft className="w-6 h-6" />
               </button>
               <h2 className="text-3xl font-bold capitalize">{view.replace("_", " ")}</h2>
             </div>
             
             <div className="flex-1 flex items-center justify-center flex-col gap-4">
-              <p className="text-xl text-gray-600 font-medium">This module will be connected to Supabase</p>
-              <div className="w-16 h-16 border-4 border-orange border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-xl text-gray-700 font-medium">This module will be connected to Supabase</p>
+              <div className="w-16 h-16 border-4 border-orange border-t-transparent rounded-full animate-spin shadow-md"></div>
             </div>
           </motion.div>
         )}
 
       </AnimatePresence>
-
-      {/* Button to navigate to About Us */}
-      {view === "menu" && (
-         <button 
-          onClick={() => onNavigate("about")}
-          className="absolute bottom-10 right-10 flex items-center gap-2 text-gray-600 hover:text-foreground transition-colors font-medium"
-        >
-          Scroll to About Us <ArrowLeft className="w-4 h-4 rotate-[-90deg]" />
-        </button>
-      )}
     </motion.div>
   );
 }

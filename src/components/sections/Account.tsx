@@ -14,7 +14,13 @@ const RANDOM_AVATARS = [
   "https://api.dicebear.com/7.x/avataaars/svg?seed=Stark",
 ];
 
-export default function Account({ onNavigate }: { onNavigate: (section: string) => void }) {
+export default function Account({ 
+  onNavigate, 
+  setIsAuthenticated 
+}: { 
+  onNavigate: (section: string) => void;
+  setIsAuthenticated: (val: boolean) => void;
+}) {
   const [authState, setAuthState] = useState<AuthState>("landing");
   const [username, setUsername] = useState("Peter");
   const [avatar, setAvatar] = useState(RANDOM_AVATARS[0]);
@@ -22,10 +28,10 @@ export default function Account({ onNavigate }: { onNavigate: (section: string) 
   const handleAuth = (e: React.FormEvent) => {
     e.preventDefault();
     if (authState === "signup") {
-      // Assign random avatar on signup
       setAvatar(RANDOM_AVATARS[Math.floor(Math.random() * RANDOM_AVATARS.length)]);
     }
     setAuthState("authenticated");
+    setIsAuthenticated(true);
   };
 
   return (

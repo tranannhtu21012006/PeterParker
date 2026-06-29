@@ -1,8 +1,9 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
+import { MotionValue } from "framer-motion";
 
 const vertexShader = `
   varying vec2 vUv;
@@ -15,6 +16,7 @@ const vertexShader = `
 const fragmentShader = `
   uniform float uTime;
   uniform vec2 uResolution;
+  uniform float uScroll;
   varying vec2 vUv;
 
   // Pseudo-random noise function
@@ -49,9 +51,10 @@ const fragmentShader = `
   void main() {
     vec2 uv = vUv;
     
-    // Animate noise
-    float noise1 = snoise(uv * 1.5 + uTime * 0.1);
-    float noise2 = snoise(uv * 3.0 - uTime * 0.15);
+    // Animate noise with time and scroll parallax
+    // We add uScroll to the Y axis to create a vertical depth shift
+    float noise1 = snoise(vec2(uv.x * 1.5, uv.y * 1.5 + uScroll * 2.0) + uTime * 0.1);
+    float noise2 = snoise(vec2(uv.x * 3.0, uv.y * 3.0 + uScroll * 1.5) - uTime * 0.15);
     
     float combinedNoise = (noise1 + noise2) * 0.5;
     
@@ -73,13 +76,15 @@ const fragmentShader = `
   }
 `;
 
-const ShaderPlane = () => {
+const ShaderPlane = ({ scrollProgress }: { scrollProgress?: MotionValue<number> }) => {
   const mesh = useRef<THREE.Mesh>(null);
+  const { viewport } = useThree();
   
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+      uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+      uScroll: { value: 0 }
     }),
     []
   );
@@ -88,12 +93,16 @@ const ShaderPlane = () => {
     if (mesh.current) {
       const material = mesh.current.material as THREE.ShaderMaterial;
       material.uniforms.uTime.value = state.clock.elapsedTime;
+      // Map scroll progress to a uniform if available
+      if (scrollProgress) {
+        material.uniforms.uScroll.value = scrollProgress.get();
+      }
     }
   });
 
   return (
     <mesh ref={mesh}>
-      <planeGeometry args={[2, 2]} />
+      <planeGeometry args={[viewport.width, viewport.height]} />
       <shaderMaterial
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
@@ -104,13 +113,13 @@ const ShaderPlane = () => {
   );
 };
 
-export default function ShaderBackground() {
+export default function ShaderBackground({ scrollProgress }: { scrollProgress?: MotionValue<number> }) {
   return (
     <Canvas
       camera={{ position: [0, 0, 1] }}
       style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
     >
-      <ShaderPlane />
+      <ShaderPlane scrollProgress={scrollProgress} />
     </Canvas>
   );
 }
