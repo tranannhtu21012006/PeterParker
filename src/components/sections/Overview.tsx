@@ -5,12 +5,12 @@ import PLogo3D from "@/components/3d/PLogo3D";
 import { ArrowRight } from "lucide-react";
 import { ShimmerText, GradientWipeText, MotionHighlight } from "@/components/ui/AnimatedText";
 
-// Mock images for the scrolling carousel
+// Mock images for the scrolling carousel (Warm/Coral/Orange theme)
 const MOCK_IMAGES = [
-  "https://images.unsplash.com/photo-1579621970588-a35d0e7ab9b6?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1580519542036-ed47c71fd482?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1565514020179-026b92b84bb6?auto=format&fit=crop&w=400&q=80",
+  "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=400&q=80", // Orange coins/piggy bank
+  "https://images.unsplash.com/photo-1601597111158-2fceff292cdc?auto=format&fit=crop&w=400&q=80", // Warm aesthetic finance
+  "https://images.unsplash.com/photo-1579621970795-87facc2f976d?auto=format&fit=crop&w=400&q=80", // Financial charts warm
+  "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=400&q=80", // Orange app UI
 ];
 
 export default function Overview({ onNavigate }: { onNavigate: (section: string) => void }) {

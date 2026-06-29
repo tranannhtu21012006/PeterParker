@@ -120,12 +120,20 @@ export default function Account({
         {authState === "authenticated" && (
           <motion.div 
             key="profile"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             className="w-full max-w-4xl flex flex-col justify-between h-full py-12"
           >
-            <div className="flex justify-between items-start w-full">
-              <div className="mt-20">
+            <div className="flex flex-col md:flex-row justify-between items-start w-full">
+              
+              {/* Left Side: Welcome Text */}
+              <motion.div 
+                initial={{ opacity: 0, x: -100 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="mt-20"
+              >
                 <h1 className="text-5xl md:text-6xl font-bold mb-4">
                   Welcome, <br/><span className="text-coral">"{username}"</span>
                 </h1>
@@ -134,31 +142,46 @@ export default function Account({
                 </p>
                 <div className="mt-12">
                    <button 
-                      onClick={() => onNavigate("assistant1")}
+                      onClick={() => onNavigate("assistant")}
                       className="group flex items-center gap-3 bg-foreground text-background px-8 py-4 rounded-full text-lg font-bold shadow-[0_10px_20px_rgba(0,0,0,0.2)] hover:-translate-y-1 transition-all duration-300"
                     >
                       <span>Continue to Assistant</span>
                       <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
-              </div>
+              </motion.div>
 
-              {/* Avatar Right Side */}
-              <div className="flex flex-col items-center mt-12 mr-12">
-                <div className="w-40 h-40 rounded-full border-4 border-white shadow-2xl overflow-hidden bg-white/50 p-2 backdrop-blur-sm">
+              {/* Right Side: Avatar */}
+              <motion.div 
+                initial={{ opacity: 0, x: 100 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+                className="flex flex-col items-center mt-12 mr-12"
+              >
+                <div className="w-40 h-40 rounded-full border-4 border-white shadow-2xl overflow-hidden bg-white/50 p-2 backdrop-blur-sm group hover:scale-105 transition-transform">
                   <img src={avatar} alt="Avatar" className="w-full h-full object-cover rounded-full" />
                 </div>
                 <p className="mt-4 font-semibold text-lg drop-shadow-sm">@{username}</p>
-              </div>
+              </motion.div>
             </div>
 
             {/* Bottom Settings Button */}
-            <div className="flex justify-end w-full">
-              <button className="flex items-center gap-2 bg-white/40 backdrop-blur-md px-4 py-2 rounded-xl shadow-sm border border-white/50 hover:bg-white/60 transition-colors">
+            <motion.div 
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="flex justify-end w-full"
+            >
+              <button 
+                onClick={() => alert("Settings Demo Mode")}
+                className="flex items-center gap-2 bg-white/40 backdrop-blur-md px-4 py-2 rounded-xl shadow-sm border border-white/50 hover:bg-white/60 transition-colors"
+              >
                 <SettingsIcon className="w-5 h-5" />
                 <span className="font-semibold">Settings</span>
               </button>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
