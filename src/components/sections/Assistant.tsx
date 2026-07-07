@@ -172,16 +172,29 @@ export default function Assistant({ user, onNavigate }: {
   const [filterMode, setFilterMode] = useState<FilterMode>("month");
   const [filterDate, setFilterDate] = useState(new Date().toISOString().slice(0, 10));
   const [importLoading, setImportLoading] = useState(false);
+  const [importError, setImportError] = useState("");
 
   // Load everything on mount
   useEffect(() => {
     const loadData = async () => {
-      const [{ data: cats }, { data: txs }, { data: prof }] = await Promise.all([
+      // Ensure profile exists (fixes FK constraint on transactions insert)
+      await supabase.from("profiles").upsert({
+        id: user.id,
+        username: user.email?.split("@")[0] || "user",
+        currency: "USD",
+        theme: "light",
+      }, { onConflict: "id", ignoreDuplicates: true });
+
+      const [{ data: cats, error: catErr }, { data: txs, error: txErr }, { data: prof }] = await Promise.all([
         supabase.from("categories").select("*").order("name"),
         supabase.from("transactions").select("*, categories(name)")
           .eq("user_id", user.id).order("transaction_date", { ascending: false }),
         supabase.from("profiles").select("username, avatar_url").eq("id", user.id).single(),
       ]);
+
+      if (catErr) console.error("[Categories error]", catErr);
+      if (txErr) console.error("[Transactions error]", txErr);
+
       if (cats) setCategories(cats as Category[]);
       if (txs) setTransactions(txs as (Transaction & { categories?: { name: string } | null })[]);
       if (prof) setProfile(prof);
@@ -193,6 +206,7 @@ export default function Assistant({ user, onNavigate }: {
     e.preventDefault();
     if (!selectedCatId || !amount) return;
     setImportLoading(true);
+    setImportError("");
     const { data, error } = await supabase.from("transactions").insert({
       user_id: user.id,
       category_id: selectedCatId,
@@ -201,7 +215,10 @@ export default function Assistant({ user, onNavigate }: {
       transaction_date: new Date().toISOString(),
     }).select("*, categories(name)").single();
     setImportLoading(false);
-    if (!error && data) {
+    if (error) {
+      console.error("[Insert transaction error]", error);
+      setImportError(`Error: ${error.message} (code: ${error.code})`);
+    } else if (data) {
       setTransactions(prev => [data as (Transaction & { categories?: { name: string } | null }), ...prev]);
       setAmount("");
       setNote("");
@@ -341,6 +358,11 @@ export default function Assistant({ user, onNavigate }: {
                   </div>
                   <p className="text-xs text-gray-500 font-medium mt-auto">* Date &amp; time auto-recorded.</p>
                 </div>
+                {importError && (
+                  <div className="bg-red-500/10 border border-red-500/50 text-red-600 px-4 py-3 rounded-xl text-sm font-semibold text-center">
+                    {importError}
+                  </div>
+                )}
                 <button type="submit" disabled={importLoading}
                   className="bg-foreground text-background py-5 rounded-xl font-bold text-xl hover:opacity-90 shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-transform disabled:opacity-60">
                   <CheckCircle2 className="w-6 h-6" />
