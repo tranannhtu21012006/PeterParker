@@ -122,7 +122,7 @@ function FloatingOrbs() {
   }, []);
 
   return (
-    <div className="relative w-64 h-80 group">
+    <div className="relative w-64 h-80 group mb-16 ml-4">
       {/* Cat on top */}
       <div className="absolute -top-7 left-1/2 -translate-x-1/2 z-20 text-4xl hover:animate-bounce cursor-default transition-transform" title="Meow">
         🐈
@@ -134,11 +134,11 @@ function FloatingOrbs() {
       
       <div className="w-full h-full rounded-2xl overflow-hidden shadow-2xl relative border-2 border-white/40 bg-white/10 backdrop-blur-md">
         
-        {/* Background Image (Rotated vertically) */}
+        {/* Background Image (Rotated vertically properly) */}
         <img 
           src="/portrait.jpg" 
           alt="Portrait" 
-          className="absolute inset-0 w-full h-full object-cover transform rotate-90 scale-125 origin-center opacity-90" 
+          className="absolute inset-0 w-full h-full object-cover transform -rotate-90 scale-[1.35] translate-x-4 origin-center opacity-90" 
         />
         
         {/* Dark overlay to make the canvas orbs and text pop out */}
