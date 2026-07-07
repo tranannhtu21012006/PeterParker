@@ -80,6 +80,9 @@ export default function Account({
     const { data, error } = await supabase.auth.signUp({
       email: signupEmail,
       password: signupPassword,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
     if (error) {
       setLoading(false);
