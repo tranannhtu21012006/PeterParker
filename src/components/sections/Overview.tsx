@@ -122,10 +122,34 @@ function FloatingOrbs() {
   }, []);
 
   return (
-    <div className="w-64 h-56 rounded-2xl overflow-hidden shadow-2xl relative border border-white/30 bg-white/10 backdrop-blur-md">
-      <canvas ref={canvasRef} className="w-full h-full block" style={{ width: "100%", height: "100%" }} />
-      <div className="absolute bottom-3 left-0 right-0 flex justify-center">
-        <span className="text-[10px] font-bold text-orange/70 tracking-widest uppercase">Live Flow</span>
+    <div className="relative w-64 h-80 group">
+      {/* Cat on top */}
+      <div className="absolute -top-7 left-1/2 -translate-x-1/2 z-20 text-4xl hover:animate-bounce cursor-default transition-transform" title="Meow">
+        🐈
+      </div>
+      
+      {/* Floating Hearts */}
+      <div className="absolute top-10 -left-6 z-20 text-2xl animate-pulse">💖</div>
+      <div className="absolute bottom-1/4 -right-5 z-20 text-3xl animate-bounce" style={{ animationDuration: '3s' }}>💘</div>
+      
+      <div className="w-full h-full rounded-2xl overflow-hidden shadow-2xl relative border-2 border-white/40 bg-white/10 backdrop-blur-md">
+        
+        {/* Background Image (Rotated vertically) */}
+        <img 
+          src="/portrait.jpg" 
+          alt="Portrait" 
+          className="absolute inset-0 w-full h-full object-cover transform rotate-90 scale-125 origin-center opacity-90" 
+        />
+        
+        {/* Dark overlay to make the canvas orbs and text pop out */}
+        <div className="absolute inset-0 bg-black/20 z-0"></div>
+
+        {/* Canvas for Orbs */}
+        <canvas ref={canvasRef} className="w-full h-full block relative z-10 mix-blend-screen" style={{ width: "100%", height: "100%" }} />
+        
+        <div className="absolute bottom-3 left-0 right-0 flex justify-center z-20">
+          <span className="text-[10px] font-bold text-white tracking-widest uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Live Flow</span>
+        </div>
       </div>
     </div>
   );
