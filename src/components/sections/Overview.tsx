@@ -138,11 +138,12 @@ function FloatingOrbs() {
         <img 
           src="/portrait.jpg" 
           alt="Portrait" 
-          className="absolute inset-0 w-full h-full object-cover transform -rotate-90 scale-[1.35] translate-x-4 origin-center opacity-90" 
+          className="absolute inset-0 w-full h-full object-cover transform -rotate-90 scale-[1.35] translate-x-4 origin-center opacity-95 brightness-110 contrast-105 saturate-[1.15]" 
         />
         
-        {/* Dark overlay to make the canvas orbs and text pop out */}
-        <div className="absolute inset-0 bg-black/20 z-0"></div>
+        {/* Warm tint overlay to brighten skin tone while keeping flow colors */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-rose-300/20 via-white/10 to-orange-200/20 mix-blend-overlay z-0"></div>
+        <div className="absolute inset-0 bg-pink-100/10 mix-blend-soft-light z-0"></div>
 
         {/* Canvas for Orbs */}
         <canvas ref={canvasRef} className="w-full h-full block relative z-10 mix-blend-screen" style={{ width: "100%", height: "100%" }} />
