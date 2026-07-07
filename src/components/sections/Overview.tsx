@@ -169,7 +169,7 @@ export default function Overview({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="absolute inset-0 flex flex-col justify-between p-12 lg:p-24 w-full h-full"
+      className="relative flex flex-col justify-between p-8 lg:p-24 w-full min-h-screen gap-12 z-10"
     >
       {/* Top Section */}
       <div className="flex justify-between items-start w-full">
